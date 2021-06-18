@@ -18,7 +18,7 @@ class Api::V1::TradersController < ApplicationController
     @trader = Trader.new(trader_params)
 
     if @trader.save
-      render json: @trader, status: :created
+      render json: @trader, only: [:authentication_token] , status: :created
     else
       render json: @trader.errors.full_messages, status: :unprocessable_entity
     end

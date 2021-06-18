@@ -7,7 +7,7 @@ class Trader < ApplicationRecord
     has_many :trader_categories
     has_many :categories, -> { order('name ASC') }, through: :trader_categories
 
-    validates :tradername, presence: true, length: {maximum: 20, minimum:4}
-    validates :storename, presence: true, length: {maximum: 20, minimum:4}
-    validates :email, presence: true, length: {maximum: 50, minimum:5}    
+    validates :tradername, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 20, minimum:4}
+    validates :storename, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 20, minimum:4}
+    validates :email, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 50, minimum:5}    
 end
