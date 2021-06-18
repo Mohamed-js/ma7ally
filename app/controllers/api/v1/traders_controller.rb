@@ -1,4 +1,4 @@
-class TradersController < ApplicationController
+class Api::V1::TradersController < ApplicationController
   before_action :set_trader, only: [:show, :update, :destroy]
 
   # GET /traders

@@ -1,4 +1,4 @@
-class TraderCategoriesController < ApplicationController
+class Api::V1::TraderCategoriesController < ApplicationController
   before_action :set_trader_category, only: [:show, :update, :destroy]
 
   # GET /trader_categories
