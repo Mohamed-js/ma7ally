@@ -26,7 +26,8 @@ class Api::V1::TradersController < ApplicationController
 
   # PATCH/PUT /traders/1
   def update
-    if @trader.update(trader_params)
+    @trader.image_data = params[:image]
+    if @trader.save
       render json: @trader
     else
       render json: @trader.errors, status: :unprocessable_entity
@@ -39,13 +40,8 @@ class Api::V1::TradersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_trader
-      @trader = Trader.find(params[:id])
-    end
-
     # Only allow a list of trusted parameters through.
     def trader_params
-      params.require(:trader).permit(:storename, :tradername, :email, :password, :image_data)
+      params.require(:trader).permit(:storename, :tradername, :email, :password, :image)
     end
 end
