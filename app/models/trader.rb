@@ -9,5 +9,5 @@ class Trader < ApplicationRecord
 
     validates :tradername, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 20, minimum:4}
     validates :storename, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 20, minimum:4}
-    validates :email, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 50, minimum:5}    
+    validates :email, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 50, minimum:5}
 end

@@ -1,11 +1,12 @@
 class Api::V1::OrdersController < ApplicationController
   before_action :set_order, only: [:show, :update, :destroy]
+  before_action :set_trader, only: [:index]
 
   # GET /orders
   def index
-    @orders = Order.all
+    @orders = @trader.orders
 
-    render json: @orders
+    render json: @orders, only: [:quantity], include: [:item, :user]
   end
 
   # GET /orders/1
