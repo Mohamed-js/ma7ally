@@ -1,5 +1,5 @@
 class Api::V1::TradersController < ApplicationController
-  before_action :set_trader, only: [:show, :update, :destroy]
+  before_action :set_trader, only: [:show, :update, :destroy, :trader_items, :trader_categories]
 
   # GET /traders
   def index
@@ -10,7 +10,18 @@ class Api::V1::TradersController < ApplicationController
 
   # GET /traders/1
   def show
-    render json: @trader
+    render json: @trader, only: [:tradername, :storename, :image_data, :destory]
+  end
+
+  def trader_items
+    render json: {
+      items: @trader.items,
+      count: @trader.items_count,
+    }
+  end
+
+  def trader_categories
+    render json: @trader.categories, only: [:id, :name]
   end
 
   # POST /traders

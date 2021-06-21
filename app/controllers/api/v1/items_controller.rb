@@ -1,6 +1,6 @@
 class Api::V1::ItemsController < ApplicationController
   before_action :set_item, only: [:show, :update, :destroy]
-
+  before_action :set_trader, only: [:create]
   # GET /items
   def index
     @items = Item.all
@@ -16,9 +16,10 @@ class Api::V1::ItemsController < ApplicationController
   # POST /items
   def create
     @item = Item.new(item_params)
+    @item.trader_id = @trader.id
 
     if @item.save
-      render json: @item, status: :created, location: @item
+      render json: @item, status: :created
     else
       render json: @item.errors, status: :unprocessable_entity
     end
@@ -29,7 +30,7 @@ class Api::V1::ItemsController < ApplicationController
     if @item.update(item_params)
       render json: @item
     else
-      render json: @item.errors, status: :unprocessable_entity
+      render json: @item.errors.full_messages, status: :unprocessable_entity
     end
   end
 
