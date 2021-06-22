@@ -26,16 +26,21 @@ class Api::V1::ItemsController < ApplicationController
     if @item.save
       render json: @item, status: :created
     else
-      render json: @item.errors, status: :unprocessable_entity
+      render json: @item.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /items/1
   def update
-    if @item.update(item_params)
-      render json: @item
+    @owner = @trader.items.include?(@item)
+    if @owner
+      if @item.update(item_params)
+        render json: {message: "Updated successfully."}
+      else
+        render json: @item.errors.full_messages, status: :unprocessable_entity
+      end
     else
-      render json: @item.errors.full_messages, status: :unprocessable_entity
+      render json: {failure: "You're not authorized to do that ya 3el2."}
     end
   end
 
