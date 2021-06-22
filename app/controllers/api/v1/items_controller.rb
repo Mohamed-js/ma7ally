@@ -1,6 +1,6 @@
 class Api::V1::ItemsController < ApplicationController
   before_action :set_item, only: [:show, :update, :destroy]
-  before_action :set_trader, only: [:create]
+  before_action :set_trader, only: [:create, :show, :update, :destroy]
   # GET /items
   def index
     @items = Item.all
@@ -10,7 +10,12 @@ class Api::V1::ItemsController < ApplicationController
 
   # GET /items/1
   def show
-    render json: @item, include: {:category => {only: :name}} 
+    @owner = @trader.items.include?(@item)
+    render json: {
+      item: @item,
+      category: @item.category.name,
+      owner: @owner
+    }
   end
 
   # POST /items
@@ -36,7 +41,13 @@ class Api::V1::ItemsController < ApplicationController
 
   # DELETE /items/1
   def destroy
-    @item.destroy
+    @owner = @trader.items.include?(@item)
+    if @owner
+      @item.destroy
+      render json: {message: "Deleted successfully."}
+    else
+      render json: {failure: "You're not authorized to do that ya 3el2."}
+    end
   end
 
   private
