@@ -20,13 +20,16 @@ class Api::V1::ItemsController < ApplicationController
 
   # POST /items
   def create
-    @item = Item.new(item_params)
-    @item.trader_id = @trader.id
-
-    if @item.save
-      render json: @item, status: :created
+    if @trader.items_count <= @trader.items_limit
+      @item = Item.new(item_params)
+      @item.trader_id = @trader.id
+      if @item.save
+        render json: @item, status: :created
+      else
+        render json: @item.errors.full_messages, status: :unprocessable_entity
+      end
     else
-      render json: @item.errors.full_messages, status: :unprocessable_entity
+      render json: {failure: "You have reached your limit, please upgrade your plan."}
     end
   end
 
