@@ -10,7 +10,7 @@ class Api::V1::TradersController < ApplicationController
 
   # GET /traders/1
   def show
-    render json: @trader, only: [:tradername, :storename, :image_data, :destory]
+    render json: @trader, only: [:tradername, :storename, :image_data, :first_visit]
   end
 
   def trader_items

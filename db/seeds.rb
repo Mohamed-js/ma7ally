@@ -4,11 +4,12 @@
 # ---------------------------------------------------------
 
 
-Category.create(name: 'foundation')
+Parent.create(name: "fashion")
+
+Category.create(name: 'skirts', parent_id: 1)
 
 TraderCategory.create(trader_id: 1, category_id: 1)
 
 Item.create(name: "Foundicare", description: "a good item for skin", price: 20.00, size: "200", unit: "ml", quantity: 1, category_id: 1, trader_id:1)
 
 Order.create(trader_id: 1, user_id: 1, item_id: 1, quantity: 1)
-

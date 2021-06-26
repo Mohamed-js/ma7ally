@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   namespace :api do
     namespace :v1 do
       root "items#index"
@@ -6,6 +7,7 @@ Rails.application.routes.draw do
       get "/trader-categories", to: "traders#trader_categories"
       resources :orders
       resources :trader_categories
+      resources :parents
       resources :categories
       resources :items
       resources :traders

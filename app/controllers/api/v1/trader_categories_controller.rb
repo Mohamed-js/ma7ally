@@ -1,5 +1,6 @@
 class Api::V1::TraderCategoriesController < ApplicationController
   before_action :set_trader_category, only: [:show, :update, :destroy]
+  before_action :set_trader, only: [:create]
 
   # GET /trader_categories
   def index
@@ -15,13 +16,15 @@ class Api::V1::TraderCategoriesController < ApplicationController
 
   # POST /trader_categories
   def create
-    @trader_category = TraderCategory.new(trader_category_params)
-
-    if @trader_category.save
-      render json: @trader_category, status: :created, location: @trader_category
-    else
-      render json: @trader_category.errors, status: :unprocessable_entity
+    categories = params[:trader_category]['categories']
+    
+    categories.each do |category|
+      @trader_category = @trader.trader_categories.build(category_id: category.to_i)
+      @trader_category.save
     end
+    @trader.first_visit = false
+    @trader.save
+    render json: {message: "Added successfully."}
   end
 
   # PATCH/PUT /trader_categories/1
@@ -46,6 +49,6 @@ class Api::V1::TraderCategoriesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def trader_category_params
-      params.require(:trader_category).permit(:trader_id, :category_id)
+      params.require(:trader_category).permit(:cats)
     end
 end
