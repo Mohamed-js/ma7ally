@@ -1,5 +1,5 @@
 class Api::V1::StoreController < ApplicationController
-    before_action :set_store
+    before_action :set_store, only: [:show, :index]
 
     # Homepage
     def index
@@ -17,7 +17,7 @@ class Api::V1::StoreController < ApplicationController
 
     # Item
     def show_item
-        @item = @store.items.find(params[:id])
+        @item = Item.find(params[:id])
         render json: @item
     end
 
