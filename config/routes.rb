@@ -13,6 +13,9 @@ Rails.application.routes.draw do
       resources :traders
       resources :users, only: %i[show create update]
       resources :sessions, only: :create
+      
+      resources :store, only: %i[index show]
+      get "/:storename/items/:id", to: "store#show_item"
     end
   end
 end
