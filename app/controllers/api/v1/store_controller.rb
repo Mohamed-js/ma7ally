@@ -12,7 +12,7 @@ class Api::V1::StoreController < ApplicationController
 
     # Category
     def show
-       render json: @store.items.where(category_id: params[:cat_id])
+       render json: @store.items.where(category_id: params[:cat_id]), include: :category
     end
 
     # Item
