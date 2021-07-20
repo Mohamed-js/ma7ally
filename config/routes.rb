@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  
   namespace :api do
     namespace :v1 do
       root "items#index"
@@ -16,6 +17,9 @@ Rails.application.routes.draw do
       
       resources :store, only: %i[index show]
       get "/:storename/items/:id", to: "store#show_item"
+
+      resources :user_sessions, only: :create
+      resources :carts
     end
   end
 end

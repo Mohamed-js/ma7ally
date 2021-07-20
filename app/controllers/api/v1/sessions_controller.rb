@@ -7,4 +7,4 @@ class Api::V1::SessionsController < ApplicationController
         render json: { failure: 'There is no such user.' }, status: :unauthorized
       end
     end
-  end
+end
