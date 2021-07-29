@@ -1,5 +1,5 @@
-class CartsController < ApplicationController
-  before_action :set_user, only: [:index, :show, :update, :destroy]
+class Api::V1::CartsController < ApplicationController
+  before_action :set_user, only: [:index, :show, :create, :update, :destroy]
   before_action :set_cart, only: [:show, :update, :destroy]
 
   # GET /carts
@@ -15,12 +15,12 @@ class CartsController < ApplicationController
 
   # POST /carts
   def create
-    @cart = Cart.new(cart_params)
+    @cart = Cart.new(cart_params.merge(user_id: @user.id))
 
     if @cart.save
-      render json: @cart, status: :created, location: @cart
+      render json: {message: "Added #{cart_params[:quantity]} of the #{@cart.item.name} to your cart!"}, status: :created
     else
-      render json: @cart.errors, status: :unprocessable_entity
+      render json: @cart.errors.full_messages, status: :unprocessable_entity
     end
   end
 
