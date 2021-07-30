@@ -5,7 +5,7 @@ class Api::V1::CartsController < ApplicationController
   # GET /carts
   def index
     @carts = @user.carts
-    render json: @carts
+    render json: @carts, only: [:id, :quantity], include: [:item]
   end
 
   # GET /carts/1
@@ -35,13 +35,15 @@ class Api::V1::CartsController < ApplicationController
 
   # DELETE /carts/1
   def destroy
-    @cart.destroy
+    if @cart.destroy
+      render json: {message: "Removed successfully!"}, status: :created
+    end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_cart
-      @cart = @user.carts.find(params[:id])
+      @cart = @user.carts.find_by(item_id: params[:id])
     end
 
     # Only allow a list of trusted parameters through.
