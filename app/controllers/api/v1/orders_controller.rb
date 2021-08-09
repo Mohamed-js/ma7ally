@@ -1,6 +1,7 @@
 class Api::V1::OrdersController < ApplicationController
   before_action :set_order, only: [:show, :update, :destroy]
   before_action :set_trader, only: [:index]
+  before_action :set_user, only: [:create]
 
   # GET /orders
   def index
@@ -16,12 +17,25 @@ class Api::V1::OrdersController < ApplicationController
 
   # POST /orders
   def create
-    @order = Order.new(order_params)
+    @errors = 0
+    @carts = @user.carts
+    @carts.each do |cart|
+      @order = Order.new(item_id: cart.item_id, user_id: cart.user_id, trader_id: cart.item.trader_id, quantity: cart.quantity, address: "#{params[:address]} - #{params[:city]} - #{params[:country]}", phone: params[:phone], total: (cart.quantity * cart.item.price), currency: "$", payment_method: params[:payment_method])
+      if params[:phone2]
+        @order[:phone2] = params[:phone2]
+      end
+      if @order.save
+        cart.delete
+      else
+        @errors = @errors + 1
+      end
+    end
 
-    if @order.save
-      render json: @order, status: :created, location: @order
+    if @errors
+      # Send message on the user's mail then send successfull message!
+      render json: {message: 'Order is placed successfully!'}
     else
-      render json: @order.errors, status: :unprocessable_entity
+      render json: {message: 'Sorry, something is wrong!'}
     end
   end
 
