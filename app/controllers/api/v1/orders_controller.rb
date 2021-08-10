@@ -7,7 +7,8 @@ class Api::V1::OrdersController < ApplicationController
   def index
     @orders = @trader.orders
 
-    render json: @orders, only: [:address, :phone, :phone2, :quantity], include: [:item, :user]
+    render json: @orders, only: [:address, :phone, :phone2, :quantity, :total, :currency], include: [:items, :user]
+    # render json: @orders, only: [:address, :phone, :phone2, :quantity, :total, :currency],:include => {:user => {:only => [:name]}, :items => {:include => :category, :only => [:name]}}
   end
 
   # GET /orders/1
@@ -17,25 +18,25 @@ class Api::V1::OrdersController < ApplicationController
 
   # POST /orders
   def create
-    @errors = 0
-    @carts = @user.carts
-    @carts.each do |cart|
-      @order = Order.new(item_id: cart.item_id, user_id: cart.user_id, trader_id: cart.item.trader_id, quantity: cart.quantity, address: "#{params[:address]} - #{params[:city]} - #{params[:country]}", phone: params[:phone], total: (cart.quantity * cart.item.price), currency: "$", payment_method: params[:payment_method])
-      if params[:phone2]
-        @order[:phone2] = params[:phone2]
-      end
-      if @order.save
-        cart.delete
-      else
-        @errors = @errors + 1
-      end
-    end
+    @trader = Trader.find_by(storename: params[:storename])
 
-    if @errors
-      # Send message on the user's mail then send successfull message!
-      render json: {message: 'Order is placed successfully!'}
+    @order = Order.new(user_id: @user.id, trader_id: @trader.id, address: "#{params[:address]} - #{params[:city]} - #{params[:country]}", phone: params[:phone], currency: "$", payment_method: params[:payment_method])
+    if params[:phone2]
+      @order[:phone2] = params[:phone2]
+    end
+    if @order.save
+      @cart_items = @user.carts
+      @cart_items.each do |cart_item|
+        order_item = OrderItem.new(order_id: @order.id, item_id: cart_item.item_id, quantity: cart_item.quantity, user_id: cart_item.user_id, status: "pending", trader_id: @trader.id )
+        if order_item.save
+          @order.total += (order_item.quantity * order_item.item.price)
+          cart_item.destroy
+        end
+      end
+      @order.save
+      render json: {message: "Order placed successfully!"}, status: :ok
     else
-      render json: {message: 'Sorry, something is wrong!'}
+      render json: @order.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -60,7 +61,7 @@ class Api::V1::OrdersController < ApplicationController
     end
 
     # Only allow a list of trusted parameters through.
-    def order_params
-      params.require(:order).permit(:item_id, :user_id, :trader_id, :quantity)
-    end
+    # def order_params
+    #   params.require(:order).permit(:item_id, :user_id, :trader_id, :quantity)
+    # end
 end

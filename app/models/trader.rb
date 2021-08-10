@@ -6,6 +6,7 @@ class Trader < ApplicationRecord
     has_many :orders, -> { order('created_at DESC') }
     has_many :trader_categories
     has_many :categories, -> { order('name ASC') }, through: :trader_categories
+    has_many :order_items
 
     validates :tradername, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 20, minimum:4}
     validates :storename, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 20, minimum:4}

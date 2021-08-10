@@ -3,6 +3,7 @@ class User < ApplicationRecord
     has_secure_password
     has_many :carts, -> { order('created_at DESC') }
     has_many :orders, -> { order('created_at DESC') }
+    has_many :order_items
 
 
     validates :username, uniqueness: { case_sensitive: false }, presence: true, length: {maximum: 20, minimum:4}
