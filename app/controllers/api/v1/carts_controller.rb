@@ -1,35 +1,22 @@
 class Api::V1::CartsController < ApplicationController
+  before_action :set_trader_by_storename, only: [:index, :create]
   before_action :set_user, only: [:index, :show, :create, :update, :destroy]
   before_action :set_cart, only: [:show, :update, :destroy]
 
   # GET /carts
   def index
-    @carts = @user.carts
+    @carts = @user.carts.where(trader_id: @trader.id)
     render json: @carts, only: [:id, :quantity], include: [:item]
-  end
-
-  # GET /carts/1
-  def show
-    render json: @cart
   end
 
   # POST /carts
   def create
-    @cart = Cart.new(cart_params.merge(user_id: @user.id))
-
+    @cart = Cart.new(quantity: params[:quantity], item_id: params[:item_id], user_id: @user.id, trader_id: @trader.id)
     if @cart.save
-      render json: {message: "Added #{cart_params[:quantity]} of the #{@cart.item.name} to your cart!"}, status: :created
+      render json: {message: "Added #{params[:quantity]} of the #{@cart.item.name} to your cart!"}, status: :created
     else
+      p @cart.errors.full_messages
       render json: @cart.errors.full_messages, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /carts/1
-  def update
-    if @cart.update(cart_params)
-      render json: @cart
-    else
-      render json: @cart.errors, status: :unprocessable_entity
     end
   end
 
@@ -46,8 +33,8 @@ class Api::V1::CartsController < ApplicationController
       @cart = @user.carts.find_by(item_id: params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
-    def cart_params
-      params.require(:cart).permit(:quantity, :item_id, :user_id)
+    # Set trader
+    def set_trader_by_storename
+      @trader = Trader.find_by(storename: params[:storename])
     end
 end

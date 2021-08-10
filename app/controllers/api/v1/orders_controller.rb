@@ -25,7 +25,7 @@ class Api::V1::OrdersController < ApplicationController
       @order[:phone2] = params[:phone2]
     end
     if @order.save
-      @cart_items = @user.carts
+      @cart_items = @user.carts.where(trader_id: @trader.id)
       @cart_items.each do |cart_item|
         order_item = OrderItem.new(order_id: @order.id, item_id: cart_item.item_id, quantity: cart_item.quantity, user_id: cart_item.user_id, status: "pending", trader_id: @trader.id )
         if order_item.save
