@@ -5,7 +5,6 @@ class Api::V1::CartsController < ApplicationController
 
   # GET /carts
   def index
-    p @trader
     @carts = @user.carts.where(trader_id: @trader.id)
     render json: @carts, only: [:id, :quantity], include: [:item]
   end
