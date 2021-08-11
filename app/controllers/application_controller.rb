@@ -16,7 +16,6 @@ class ApplicationController < ActionController::API
         end
     end
 
-
     def set_trader
         if request.headers['Authorization'].present?
             @trader = Trader.find_by(authentication_token: request.headers['Authorization'])
