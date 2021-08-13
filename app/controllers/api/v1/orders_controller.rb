@@ -27,7 +27,7 @@ class Api::V1::OrdersController < ApplicationController
     if @order.save
       @cart_items = @user.carts.where(trader_id: @trader.id)
       @cart_items.each do |cart_item|
-        order_item = OrderItem.new(order_id: @order.id, item_id: cart_item.item_id, quantity: cart_item.quantity, user_id: cart_item.user_id, status: "pending", trader_id: @trader.id )
+        order_item = OrderItem.new(order_id: @order.id, item_id: cart_item.item_id, quantity: cart_item.quantity, total: cart_item.quantity * cart_item.item.price, user_id: cart_item.user_id, status: "pending", trader_id: @trader.id )
         if order_item.save
           @order.total += (order_item.quantity * order_item.item.price)
           cart_item.destroy
