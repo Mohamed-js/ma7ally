@@ -44,8 +44,8 @@ class Api::V1::StatisticsController < ApplicationController
         # # ----------------------------------------------------------------------------
         # # ----------------------------------------------------------------------------
 
-        most_popular_products = trader_order_items.joins(:item).select(:total, :name).group(:name).order('sum_quantity desc').limit(10).sum(:quantity)
-        most_profitable_products = trader_order_items.joins(:item).select(:total, :name).group(:name).order('sum_total desc').limit(10).sum(:total)
+        most_popular_products = trader_order_items.joins(:item).select(:total, :name, :image_data).group(:name, :image_data, :price).order('sum_quantity desc').limit(10).sum(:quantity).to_a
+        most_profitable_products = trader_order_items.joins(:item).select(:total, :name, :image_data).group(:name, :image_data, :price).order('sum_total desc').limit(10).sum(:total).to_a
 
         category_revenue_pairs = trader_order_items.joins('INNER JOIN items ON order_items.item_id = items.id LEFT JOIN categories ON items.category_id = categories.id').select('order_items.total, categories.name').group('categories.name').sum('total').to_a # The result
 
