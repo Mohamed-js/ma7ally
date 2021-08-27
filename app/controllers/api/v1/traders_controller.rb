@@ -27,7 +27,7 @@ class Api::V1::TradersController < ApplicationController
   # POST /traders
   def create
     @trader = Trader.new(trader_params)
-
+    @trader.storename.downcase
     if @trader.save
       TraderMailer.with(trader: @trader).welcome_email.deliver_later
       render json: @trader, only: [:authentication_token] , status: :created
