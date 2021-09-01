@@ -7,7 +7,7 @@ class Api::V1::OrdersController < ApplicationController
   def index
     @orders = @trader.orders
 
-    render json: @orders, only: [:address, :phone, :phone2, :quantity, :total, :currency], include: {:items => {:only => [:name, :size, :unit]}, :user => {:only => [:username]}}
+    render json: @orders, only: [:address, :phone, :phone2, :quantity, :total, :currency], include: {:order_items => {:include => {:item => {:only => [:name, :size, :unit, :image_data]}},:only => [:quantity, :total]}, :user => {:only => [:username]}}
   end
 
   # GET /orders/1

@@ -15,4 +15,8 @@ class Trader < ApplicationRecord
     def items_count
         items.count
     end
+
+    def new_orders
+        orders.where(done: false)
+    end
 end
